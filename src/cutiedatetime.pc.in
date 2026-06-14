@@ -1,0 +1,11 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: cutiedatetime
+Description: Cutie Shell date/time and timezone settings module
+Version: @PROJECT_VERSION@
+Requires: Qt6Core Qt6DBus
+Libs: -L${libdir} -lcutiedatetime
+Cflags: -I${includedir}

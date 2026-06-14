@@ -1,0 +1,33 @@
+Source: libcutiedatetime
+Priority: optional
+Maintainer: Mathew Dennis
+Build-Depends:
+ debhelper-compat (= 13),
+ cmake (>= 3.16),
+ qt6-base-dev,
+ qt6-declarative-dev,
+ libqt6dbus6,
+ libqt6qml6,
+Standards-Version: 4.6.2
+Section: libs
+
+Package: libcutiedatetime
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Cutie Shell date/time settings library
+ Shared library providing the CutieDateTime C++ backend used by
+ cutie-settings to configure the system clock, timezone, and NTP.
+
+Package: libcutiedatetime-dev
+Architecture: any
+Section: libdevel
+Depends: libcutiedatetime (= ${binary:Version}), ${misc:Depends}
+Description: Cutie Shell date/time settings library — development files
+ Headers and pkg-config file for building against libcutiedatetime.
+
+Package: qml6-module-cutiedatetime
+Architecture: any
+Depends: libcutiedatetime (= ${binary:Version}), ${misc:Depends}
+Description: Cutie Shell date/time QML plugin
+ QML plugin that exposes CutieDateTime as a singleton importable via
+ "import Cutie.Datetime" in QML files.
