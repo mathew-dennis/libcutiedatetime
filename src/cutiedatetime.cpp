@@ -125,14 +125,14 @@ void CutieDateTime::onPropertiesChanged(const QString     &interface,
 // ── Public actions ────────────────────────────────────────────────────────────
 
 // Toggle Network Time Protocol sync.
-// interactive = false: polkit must already grant the permission; no pop-up.
+// interactive = true: polkit will pop up a password prompt if permission is needed.
 bool CutieDateTime::setNTP(bool enabled) {
     if (!m_timedateIface->isValid()) {
         emit errorOccurred("D-Bus interface unavailable");
         return false;
     }
 
-    QDBusReply<void> reply = m_timedateIface->call("SetNTP", enabled, /*interactive=*/false);
+    QDBusReply<void> reply = m_timedateIface->call("SetNTP", enabled, /*interactive=*/true);
 
     if (!reply.isValid()) {
         qWarning() << "module - CutieDateTime - setNTP() failed:"
@@ -146,13 +146,14 @@ bool CutieDateTime::setNTP(bool enabled) {
 }
 
 // Set the IANA timezone (e.g. "Asia/Dubai", "Europe/London").
+// interactive = true: polkit will pop up a password prompt if permission is needed.
 bool CutieDateTime::setTimezone(const QString &timezone) {
     if (!m_timedateIface->isValid()) {
         emit errorOccurred("D-Bus interface unavailable");
         return false;
     }
 
-    QDBusReply<void> reply = m_timedateIface->call("SetTimezone", timezone, /*interactive=*/false);
+    QDBusReply<void> reply = m_timedateIface->call("SetTimezone", timezone, /*interactive=*/true);
 
     if (!reply.isValid()) {
         qWarning() << "module - CutieDateTime - setTimezone() failed:"
@@ -168,6 +169,7 @@ bool CutieDateTime::setTimezone(const QString &timezone) {
 // Set the system clock.  NTP must be disabled first; timedated rejects this
 // call while NTP is active and errorOccurred will be emitted.
 // `dateTime` should be in UTC.
+// interactive = true: polkit will pop up a password prompt if permission is needed.
 bool CutieDateTime::setTime(const QDateTime &dateTime) {
     if (!m_timedateIface->isValid()) {
         emit errorOccurred("D-Bus interface unavailable");
@@ -177,9 +179,9 @@ bool CutieDateTime::setTime(const QDateTime &dateTime) {
     // timedated expects microseconds since the Unix epoch (UTC).
     const qint64 usecsSinceEpoch = dateTime.toMSecsSinceEpoch() * 1000LL;
 
-    // relative = false: absolute time.  interactive = false.
+    // relative = false: absolute time.  interactive = true.
     QDBusReply<void> reply = m_timedateIface->call(
-        "SetTime", usecsSinceEpoch, /*relative=*/false, /*interactive=*/false);
+        "SetTime", usecsSinceEpoch, /*relative=*/false, /*interactive=*/true);
 
     if (!reply.isValid()) {
         qWarning() << "module - CutieDateTime - setTime() failed:"
